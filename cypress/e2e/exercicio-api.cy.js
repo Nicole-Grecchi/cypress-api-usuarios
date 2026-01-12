@@ -4,16 +4,11 @@
  const usuariosSchema = require('../contracts/usuarios.contract')
 describe('Testes da Funcionalidade Usuários', () => {
  
-    it('Deve validar contrato de usuários', () => {
-  cy.request({
-    method: 'GET',
-    url: '/usuarios'
-  }).then((response) => {
-    expect(response.status).to.eq(200)
-    usuariosSchema.validate(response.body)
+  it('Deve validar contrato de usuários', () => {
+  cy.listarUsuarios().then((responseBody) => {
+    usuariosSchema.validate(responseBody)
   })
 })
-
 
   it('Deve listar usuários cadastrados', () => {
     cy.request({
@@ -35,8 +30,8 @@ describe('Testes da Funcionalidade Usuários', () => {
     cy.request({
       method: 'POST',
       url: '/usuarios',
-      body: {"nome": "nicole braz",
-             "email": "nicolebraz@qa.com.br",
+      body: {"nome": "nicole teste",
+             "email": "nicoleteste@qa.com.br",
              "password": "teste",
              "administrador": "true"}
     }).should((response) =>{
