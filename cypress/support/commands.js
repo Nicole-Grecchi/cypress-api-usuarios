@@ -1,6 +1,5 @@
-
 Cypress.Commands.add('token', (email, senha) => {
-  cy.request({
+  return cy.request({
     method: 'POST',
     url: 'login',
     body: {
@@ -9,15 +8,14 @@ Cypress.Commands.add('token', (email, senha) => {
     }
   }).then((response) => {
     expect(response.status).to.eq(200)
-
     Cypress.env('token', response.body.authorization)
+    return response
   })
 })
-
 Cypress.Commands.add('cadastrarProduto', (produto, preco, descricao, quantidade) => {
   const token = Cypress.env('token')
 
-  cy.request({
+  return cy.request({
     method: 'POST',
     url: 'produtos',
     headers: {
@@ -32,14 +30,14 @@ Cypress.Commands.add('cadastrarProduto', (produto, preco, descricao, quantidade)
   }).then((response) => {
     expect(response.status).to.eq(201)
     Cypress.env('produtoId', response.body._id)
+    return response
   })
 })
-
 Cypress.Commands.add('atualizarProduto', (produto, preco, descricao, quantidade) => {
   const token = Cypress.env('token')
   const produtoId = Cypress.env('produtoId')
 
-  cy.request({
+  return cy.request({
     method: 'PUT',
     url: `produtos/${produtoId}`,
     headers: {
@@ -53,13 +51,14 @@ Cypress.Commands.add('atualizarProduto', (produto, preco, descricao, quantidade)
     }
   }).then((response) => {
     expect(response.status).to.eq(200)
+    return response
   })
 })
 Cypress.Commands.add('deletarProduto', () => {
   const token = Cypress.env('token')
   const produtoId = Cypress.env('produtoId')
 
-  cy.request({
+  return cy.request({
     method: 'DELETE',
     url: `produtos/${produtoId}`,
     headers: {
@@ -67,16 +66,32 @@ Cypress.Commands.add('deletarProduto', () => {
     }
   }).then((response) => {
     expect(response.status).to.eq(200)
+    return response
   })
 })
-
 Cypress.Commands.add('listarUsuarios', () => {
-  cy.request({
+  return cy.request({
     method: 'GET',
     url: 'usuarios'
   }).then((response) => {
     expect(response.status).to.eq(200)
     return response.body
+  })
+})
+Cypress.Commands.add('cadastrarUsuario', (nome, email, password) => {
+  return cy.request({
+    method: 'POST',
+    url: 'usuarios',
+    body: {
+      nome,
+      email,
+      password,
+      administrador: 'true'
+    }
+  }).then((response) => {
+    expect(response.status).to.eq(201)
+    Cypress.env('usuarioId', response.body._id)
+    return response
   })
 })
 

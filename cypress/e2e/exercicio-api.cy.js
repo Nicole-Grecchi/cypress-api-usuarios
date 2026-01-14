@@ -27,18 +27,15 @@ describe('Testes da Funcionalidade Usuários', () => {
   });
 
   it('Deve cadastrar um usuário com sucesso', () => {
-    cy.request({
-      method: 'POST',
-      url: '/usuarios',
-      body: {"nome": "nicole teste",
-             "email": "nicoleteste@qa.com.br",
-             "password": "teste",
-             "administrador": "true"}
-    }).should((response) =>{
-      expect(response.status).to.equal(201)
-      expect(response.body.message).to.equal('Cadastro realizado com sucesso')
-    })
-  });
+  const nome = 'Usuario Teste'
+  const email = `usuario_${Date.now()}@teste.com`
+  const password = 'teste123'
+
+  cy.cadastrarUsuario(nome, email, password).then((response) => {
+    expect(response.body.message).to.eq('Cadastro realizado com sucesso')
+  })
+})
+
 
   it('Deve validar um usuário com email inválido', () => {
   cy.request({
