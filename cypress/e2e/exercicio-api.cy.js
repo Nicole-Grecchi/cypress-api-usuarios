@@ -56,63 +56,50 @@ describe('Testes da Funcionalidade Usuários', () => {
 
   });
 
-  it('Deve editar um usuário previamente cadastrado', () => {
-  const emailOriginal = `usuario_${Date.now()}@qa.com.br`
-  const emailEditado = `usuario_editado_${Date.now()}@qa.com.br`
-  cy.request({
-    method: 'POST',
-    url: '/usuarios',
-    body: {
-      nome: 'Usuário Original',
-      email: emailOriginal,
-      password: 'teste',
-      administrador: "true"
-      }
-  }).then((createResponse) => {
-    expect(createResponse.status).to.eq(201)
+ it('Deve editar um usuário previamente cadastrado', () => {
+  const nome = 'Usuário Original'
+  const email = `usuario_${Date.now()}@qa.com.br`
+  const password = 'teste'
 
-    const userId = createResponse.body._id
+  cy.cadastrarUsuario(nome, email, password).then(() => {
+    const userId = Cypress.env('usuarioId')
+
     cy.request({
       method: 'PUT',
       url: `/usuarios/${userId}`,
       body: {
         nome: 'Usuário Editado',
-        email: emailEditado,
+        email: `usuario_editado_${Date.now()}@qa.com.br`,
         password: 'teste',
-        administrador: "false"
+        administrador: 'false'
       }
-    }).then((updateResponse) => {
-      expect(updateResponse.status).to.eq(200)
-      expect(updateResponse.body.message)
+    }).then((response) => {
+      expect(response.status).to.eq(200)
+      expect(response.body.message)
         .to.eq('Registro alterado com sucesso')
     })
   })
 })
 
-it('Deve deletar um usuário previamente cadastrado', () => {
-  const email = `usuario_${Date.now()}@qa.com.br`
-  cy.request({
-    method: 'POST',
-    url: '/usuarios',
-    body: {
-      nome: 'Usuário para Delete',
-      email: email,
-      password: 'teste',
-      administrador: "true" 
-    }
-  }).then((createResponse) => {
-    expect(createResponse.status).to.eq(201)
 
-    const userId = createResponse.body._id
+it('Deve deletar um usuário previamente cadastrado', () => {
+  const nome = 'Usuário para Delete'
+  const email = `usuario_${Date.now()}@qa.com.br`
+  const password = 'teste'
+
+  cy.cadastrarUsuario(nome, email, password).then(() => {
+    const userId = Cypress.env('usuarioId')
+
     cy.request({
       method: 'DELETE',
       url: `/usuarios/${userId}`
-    }).then((deleteResponse) => {
-      expect(deleteResponse.status).to.eq(200)
-      expect(deleteResponse.body.message)
+    }).then((response) => {
+      expect(response.status).to.eq(200)
+      expect(response.body.message)
         .to.eq('Registro excluído com sucesso')
     })
   })
 })
+
 
   });
